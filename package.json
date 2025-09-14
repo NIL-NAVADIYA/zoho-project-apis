@@ -7,10 +7,13 @@
     "start": "ts-node src/app.ts"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
+    "@types/node": "^22.7.5",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2"
   }
