@@ -1,8 +1,17 @@
 import { NextFunction, Request, Response } from "express";
+import {
+  deleteProject,
+  getProject,
+  getProjects,
+  updateProject,
+  createProject as createProjectService,
+} from "./project.service";
 
-import { getProjects } from "./project.service";
-
-export const listProjects = async (req: Request, res: Response) => {
+export const listProjects = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const portalId = req.params.portalId;
     const oauthToken = (req as any).user.zohoOAuthToken;
@@ -19,10 +28,7 @@ export const listProjects = async (req: Request, res: Response) => {
 
     res.status(response.status).json(response.data);
   } catch (error: any) {
-    if (error.response) {
-      return res.status(error.response.status).json(error.response.data);
-    }
-    res.status(500).json({ message: "Unexpected error", error: error.message });
+    next(error);
   }
 };
 
@@ -36,83 +42,89 @@ export const createProject = async (
     const oauthToken = (req as any).user.zohoOAuthToken;
     const projectData = req.body;
 
-    const response = await createProject(oauthToken, portalId, projectData);
+    const response = await createProjectService(
+      oauthToken,
+      portalId,
+      projectData
+    );
+
+    res.status(response.status).json({
+      success: true,
+      message: "Project created successfully",
+      data: response.data,
+    });
   } catch (error: any) {
-    if (error.response) {
-      return res.status(error.response.status).json(error.response.data);
-    }
-    res.status(500).json({ message: "Unexpected error", error: error.message });
+    next(error);
   }
 };
 
-export const getZohoProjectDetails = async (req: Request, res: Response) => {
+export const getZohoProjectDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const portalId = process.env.PORTAL_ID;
-    const oauthToken = process.env.ZOHO_OAUTH_TOKEN;
+    const portalId = process.env.PORTAL_ID as string;
+    const oauthToken = process.env.ZOHO_OAUTH_TOKEN as string;
     const { projectId } = req.params as { projectId: string };
-    if (!portalId || !oauthToken) {
-      return res.status(500).json({
-        message: "Missing PORTAL_ID or ZOHO_OAUTH_TOKEN in environment",
-      });
-    }
-    if (!projectId) {
-      return res.status(400).json({ message: "projectId is required" });
-    }
 
-    res.status(200).json({ message: "Project details fetched successfully" });
+    const response = await getProject(oauthToken, portalId, projectId);
+
+    res.status(response.status).json({
+      success: true,
+      message: "Project details fetched successfully",
+      data: response.data,
+    });
   } catch (error: any) {
-    if (error.response) {
-      return res.status(error.response.status).json(error.response.data);
-    }
-    res.status(500).json({ message: "Unexpected error", error: error.message });
+    next(error);
   }
 };
 
-export const updateZohoProject = async (req: Request, res: Response) => {
+export const updateZohoProject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const portalId = process.env.PORTAL_ID;
-    const oauthToken = process.env.ZOHO_OAUTH_TOKEN;
+    const portalId = process.env.PORTAL_ID as string;
+    const oauthToken = process.env.ZOHO_OAUTH_TOKEN as string;
     const { projectId } = req.params as { projectId: string };
-    if (!portalId || !oauthToken) {
-      return res.status(500).json({
-        message: "Missing PORTAL_ID or ZOHO_OAUTH_TOKEN in environment",
-      });
-    }
-    if (!projectId) {
-      return res.status(400).json({ message: "projectId is required" });
-    }
 
-    // res.status(Response.status).json(Response.data);
+    const response = await updateProject(
+      oauthToken,
+      portalId,
+      projectId,
+      req.body
+    );
+
+    res.status(response.status).json({
+      success: true,
+      message: "Project updated successfully",
+      data: response.data,
+    });
   } catch (error: any) {
-    if (error.response) {
-      return res.status(error.response.status).json(error.response.data);
-    }
-    res.status(500).json({ message: "Unexpected error", error: error.message });
+    next(error);
   }
+};
 
-  const deleteZohoProject = async (req: Request, res: Response) => {
-    try {
-      const portalId = process.env.PORTAL_ID;
-      const oauthToken = process.env.ZOHO_OAUTH_TOKEN;
-      const { projectId } = req.params as { projectId: string };
-      if (!portalId || !oauthToken) {
-        return res.status(500).json({
-          message: "Missing PORTAL_ID or ZOHO_OAUTH_TOKEN in environment",
-        });
-      }
-      if (!projectId) {
-        return res.status(400).json({ message: "projectId is required" });
-      }
+export const deleteZohoProject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const portalId = process.env.PORTAL_ID as string;
+    const oauthToken = process.env.ZOHO_OAUTH_TOKEN as string;
+    const { projectId } = req.params as { projectId: string };
 
-      res.status(200).json({ message: "Project deleted successfully" });
-    } catch (error: any) {
-      if (error.response) {
-        return res.status(error.response.status).json(error.response.data);
-      }
+    const response = await deleteProject(oauthToken, portalId, projectId);
 
-      res
-        .status(500)
-        .json({ message: "Unexpected error", error: error.message });
-    }
-  };
+    res.status(response.status).json({
+      success: true,
+      message: "Project deleted successfully",
+      data: response.data,
+    });
+  } catch (error: any) {
+    next(error);
+  }
 };

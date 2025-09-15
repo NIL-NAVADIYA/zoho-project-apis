@@ -4,7 +4,7 @@ import {
   createProject,
   getZohoProjectDetails,
   updateZohoProject,
-  // deleteZohoProject,
+  deleteZohoProject,
 } from "./projects.controller";
 
 const projectRouter = express.Router();
@@ -14,6 +14,6 @@ projectRouter.get("/", listProjects);
 projectRouter.get("/:portalId/:projectId", getZohoProjectDetails);
 projectRouter.post("/:portalId", createProject);
 projectRouter.put("/:portalId/:projectId", updateZohoProject);
-// projectRouter.delete("/:portalId/:projectId", deleteZohoProject);
+projectRouter.delete("/:portalId/:projectId", deleteZohoProject);
 
 export default projectRouter;
