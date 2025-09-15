@@ -9,8 +9,9 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "baseUrl": "./",
-    "rootDir": "."
+    "rootDir": ".",
+    "paths": {
+      "src/*": ["src/*"]
+    }
   }
-  // "include": ["src", "prisma"],
-  // "exclude": ["node_modules"]
 }

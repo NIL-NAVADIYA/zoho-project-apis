@@ -1,14 +1,16 @@
 import {
   ProjectError,
   ProjectNotFoundError,
-} from "src/resources/errors/Project";
+} from "../../resources/errors/Project";
+
 import {
   getAllProjects,
   createProject as createProjectAPI,
   updateProjectById as updateProjectByIdAPI,
   deleteProjectById as deleteProjectByIdAPI,
   getProjectById,
-} from "src/services/zoho/projects";
+} from "../../services/zoho/projects";
+
 import { CreateProjectPyload } from "src/types/services/project";
 
 // ---- Services ----
